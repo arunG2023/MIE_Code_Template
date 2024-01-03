@@ -12,13 +12,17 @@
             <div class="form-outline mb-4">
               <label class="form-label" for="form2Example18">Email address</label>
               <input type="email" id="form2Example18" class="form-control " formControlName="userName" />
-              <span  *ngIf="(login.controls['userName']['touched'] &&login.controls['userName']['errors'])" class="error" >Email is Invalid</span>
+              <span  *ngIf="(login.controls['userName']['touched'] && login.controls['userName']['errors'])
+                            || isFormError && login.controls['userName']['errors'] " 
+                      class="error" >Email is Invalid</span>
             </div>
 
             <div class="form-outline mb-4">
               <label class="form-label" for="form2Example28">Password</label>
               <input type="password" id="form2Example28" class="form-control " formControlName="password" />
-              <span  *ngIf="(login.controls['password']['touched'] &&login.controls['password']['errors'])" class="error" >Password should contain 8 characters</span>
+              <span  *ngIf="(login.controls['password']['touched'] && login.controls['password']['errors'])
+                            || isFormError &&  login.controls['password']['errors'] "
+                           class="error" >Password should contain atleat 8 characters</span>
             </div>
 
             <div class="row ">
