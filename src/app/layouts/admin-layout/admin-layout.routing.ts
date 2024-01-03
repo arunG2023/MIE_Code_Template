@@ -11,9 +11,10 @@ import { PostEventSettlementComponent } from 'app/post-event-settlement/post-eve
 import { EventListComponent } from 'app/event-list/event-list.component';
 import { HonarariumListComponent } from 'app/honararium-list/honararium-list.component';
 import { PostEventListComponent } from 'app/post-event-list/post-event-list.component';
+import { AuthGuard } from 'app/guards/auth.guard';
 
 export const AdminLayoutRoutes: Routes = [
-    { path: 'dashboard', component: DashboardComponent },
+    { path: 'dashboard', component: DashboardComponent,canActivate:[AuthGuard] },
     { path: 'new-event-request', component: NewEventRequestComponent },
     { path: 'honararium-payment-request', component: HonarariumPaymentRequestComponent },
     { path: 'post-event-settlement', component: PostEventSettlementComponent  },
