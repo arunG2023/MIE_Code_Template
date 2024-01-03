@@ -34,6 +34,7 @@ export class NavbarComponent implements OnInit {
      });
     }
 
+    // Side bar functionalities
     sidebarOpen() {
         const toggleButton = this.toggleButton;
         const body = document.getElementsByTagName('body')[0];
@@ -109,6 +110,7 @@ export class NavbarComponent implements OnInit {
         }
     };
 
+    // Getting componenets title while moving through the side bar
     getTitle(){
       var titlee = this.location.prepareExternalUrl(this.location.path());
       if(titlee.charAt(0) === '#'){
