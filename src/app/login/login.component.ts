@@ -13,6 +13,8 @@ export class LoginComponent implements OnInit {
 
   login: FormGroup;
 
+  isInvalidCredentials: boolean = false;
+
   constructor(private userService: UserServiceService,private authService: AuthService, private router: Router) { 
     this.login = new FormGroup({
       userName : new FormControl('', [Validators.required,Validators.email]),
@@ -22,10 +24,10 @@ export class LoginComponent implements OnInit {
 
   loginUser(){
     // console.log(this.login)
-
+  
     if(this.login.valid){
       // Call login Service
-      // console.log(this.login)
+      // console.log(this.login.value)
       // this.userService.loginUser(this.login.value).subscribe((res) => {
         
       //     //Put the below code here
@@ -34,13 +36,17 @@ export class LoginComponent implements OnInit {
 
       const res = {
         'message' : 'user logged',
-        'token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFydW5rdW1hckBtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwibmJmIjoxNzA0MjYzMDMzLCJleHAiOjE3MDQzNDk0MzMsImlhdCI6MTcwNDI2MzAzM30.m48LyfFCzQqWuIClpqbx60gX2fp4-4G1pcKpK2T8gcg'
+         'token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFydW5rdW1hckBtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwibmJmIjoxNzA0MjYzMDMzLCJleHAiOjE3MDQzNDk0MzMsImlhdCI6MTcwNDI2MzAzM30.m48LyfFCzQqWuIClpqbx60gX2fp4-4G1pcKpK2T8gcg'
       }
 
       // Put this code above
       if(res.token){
+        this.isInvalidCredentials = false
         this.authService.storeToken(res.token);
         this.router.navigate(['dashboard'])
+      }
+      else{
+        this.isInvalidCredentials = true
       }
     
     }
