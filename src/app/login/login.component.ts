@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from 'app/services/auth.service';
+import { UserServiceService } from 'app/services/user-service.service';
 
 @Component({
   selector: 'app-login',
@@ -10,10 +13,10 @@ export class LoginComponent implements OnInit {
 
   login: FormGroup;
 
-  constructor() { 
+  constructor(private userService: UserServiceService,private authService: AuthService, private router: Router) { 
     this.login = new FormGroup({
-      email : new FormControl('', Validators.required),
-      password : new FormControl('', Validators.required)
+      userName : new FormControl('', [Validators.required,Validators.email]),
+      password : new FormControl('', [Validators.required,Validators.minLength(8), Validators.maxLength(8)])
     })
   }
 
@@ -22,8 +25,27 @@ export class LoginComponent implements OnInit {
 
     if(this.login.valid){
       // Call login Service
-      console.log(this.login)
+      // console.log(this.login)
+      // this.userService.loginUser(this.login.value).subscribe((res) => {
+        
+      //     //Put the below code here
+          
+      //   })
+
+      const res = {
+        'message' : 'user logged',
+        'token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFydW5rdW1hckBtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwibmJmIjoxNzA0MjYzMDMzLCJleHAiOjE3MDQzNDk0MzMsImlhdCI6MTcwNDI2MzAzM30.m48LyfFCzQqWuIClpqbx60gX2fp4-4G1pcKpK2T8gcg'
+      }
+
+      // Put this code above
+      if(res.token){
+        this.authService.storeToken(res.token);
+        this.router.navigate(['dashboard'])
+      }
+    
     }
+
+
     else{
       console.log("error")
     }

@@ -11,6 +11,10 @@ export class AuthService {
 
   // Method to check whether user is logged in -- TEST
   isLoggedIn(){
-    return true;
+    return !!localStorage.getItem('token')
+  }
+
+  storeToken(tokenValue:string){
+    localStorage.setItem('token',tokenValue)
   }
 }
