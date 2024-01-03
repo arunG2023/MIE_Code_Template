@@ -11,11 +11,11 @@ declare interface RouteInfo {
 export const ROUTES: RouteInfo[] = [
     { path: '/dashboard', title: 'Dashboard',  icon: 'dashboard', class: '' },
     { path: '/new-event-request', title: 'New Event Request',  icon:'post_add', class: '' },
-    { path: '/honararium-payment-request', title: 'Honararium Payment ',  icon:'content_paste', class: '' },
-    { path: '/post-event-settlement', title: 'Post Event Settlement',  icon:'library_books', class: '' },
+    { path: '/honararium-payment-request', title: 'New Honararium Payment Request',  icon:'post_add', class: '' },
+    { path: '/post-event-settlement', title: 'New Post Event Settlement Request',  icon:'post_add', class: '' },
     { path: '/view-event-list', title: 'View Event Requests',  icon:'event', class: '' },
-    { path: '/view-honararium-list', title: 'Honararium Payment List',  icon:'receipt', class: '' },
-    { path: '/post-event-list', title: 'Post Event Settlement List',  icon:'view_day', class: '' },
+    { path: '/view-honararium-list', title: 'View Honararium Payment Request',  icon:'event', class: '' },
+    { path: '/post-event-list', title: 'View Post Event Settlement Request',  icon:'event', class: '' },
     
 ];
 
