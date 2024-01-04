@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+// Google Single Sign On Imports
+declare var google:any;
+declare var window:any;
+import {CredentialResponse,PromptMomentNotification} from 'google-one-tap'
+
+import { Component, OnInit, NgZone } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'app/services/auth.service';
@@ -16,7 +21,10 @@ export class LoginComponent implements OnInit {
   isInvalidCredentials: boolean = false;
   isFormError : boolean = false;
 
-  constructor(private userService: UserServiceService,private authService: AuthService, private router: Router) { 
+  constructor(private userService: UserServiceService,
+              private authService: AuthService, 
+              private router: Router,
+              private _ngZone:NgZone) { 
     this.login = new FormGroup({
       userName : new FormControl('', [Validators.required,Validators.email]),
       password : new FormControl('', [Validators.required,Validators.minLength(8)])
@@ -63,6 +71,38 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Implementation of google single sign on
+    window.onGoogleLibraryLoad = ()=> {
+      google.accounts.id.initialize({
+        client_id: '200698853522-5b3nkgrgal38n7eqjqrrt6biinbt46ca.apps.googleusercontent.com',
+        callback: this.handleCredentialResponse.bind(this),
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("buttonDiv"),
+        { theme: "outline", size: "large", width: "100%"}
+        );
+        google.accounts.id.prompt((notification: PromptMomentNotification)=> {});
+      };
   }
+
+  // Method to call handle google single sign on with backend 
+  async handleCredentialResponse (response: CredentialResponse){
+    debugger
+    await this.userService.loginWithGoogle(response.credential).subscribe(
+   
+      (x:any) => {
+        debugger
+      localStorage.setItem("token", x.token);
+      this._ngZone.run(() => {
+         this.router.navigate(['/logout']);
+      })},
+      (error:any) => {
+        debugger
+        console.log(error);
+        }
+        );
+      }
 
 }
