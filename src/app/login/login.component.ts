@@ -1,6 +1,6 @@
 // Google Single Sign On Imports
 declare var google:any;
-declare var window:any;
+// declare var window:any;
 import {CredentialResponse,PromptMomentNotification} from 'google-one-tap'
 
 import { Component, OnInit, NgZone } from '@angular/core';
@@ -8,6 +8,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'app/services/auth.service';
 import { UserServiceService } from 'app/services/user-service.service';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,7 @@ export class LoginComponent implements OnInit {
               private router: Router,
               private _ngZone:NgZone) { 
     this.login = new FormGroup({
-      userName : new FormControl('', [Validators.required,Validators.email]),
+      emailId : new FormControl('', [Validators.required,Validators.email]),
       password : new FormControl('', [Validators.required,Validators.minLength(8)])
     })
   }
@@ -35,8 +36,13 @@ export class LoginComponent implements OnInit {
     
   
     if(this.login.valid){
+
+      const loginRequestBody = {
+        "emailId": this.login.value.emailId,
+        "password": this.login.value.password
+      }
    
-      this.userService.loginUser(this.login.value).subscribe(
+      this.userService.loginUser(loginRequestBody).subscribe(
         res => {
           if(res.token){
             this.isInvalidCredentials = false
@@ -46,23 +52,11 @@ export class LoginComponent implements OnInit {
         },
         err => {
           this.isInvalidCredentials = true
+          alert(err.error)
         }
         );
 
-      // For checking purpose as I can't run .NET
-      const res = {
-        'message' : 'user logged',
-         'token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFydW5rdW1hckBtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwibmJmIjoxNzA0MjYzMDMzLCJleHAiOjE3MDQzNDk0MzMsImlhdCI6MTcwNDI2MzAzM30.m48LyfFCzQqWuIClpqbx60gX2fp4-4G1pcKpK2T8gcg'
-      }
-
-      if(res.token){
-        this.isInvalidCredentials = false
-        this.authService.storeToken(res.token);
-        this.router.navigate(['dashboard'])
-      }
-      else{
-        this.isInvalidCredentials = true
-      }
+    
     
     }
     else{
@@ -71,10 +65,30 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Implementation of google single sign on
-    window.onGoogleLibraryLoad = ()=> {
+    
+    // window.onGoogleLibraryLoad = ()=> {
+    //   google.accounts.id.initialize({
+    //     client_id: '200698853522-5b3nkgrgal38n7eqjqrrt6biinbt46ca.apps.googleusercontent.com',
+    //     callback: this.handleCredentialResponse.bind(this),
+    //     auto_select: false,
+    //     cancel_on_tap_outside: true
+    //   });
+    //   google.accounts.id.renderButton(
+    //     document.getElementById("buttonDiv"),
+    //     { theme: "outline", size: "large", width: "100%"}
+    //     );
+    //     google.accounts.id.prompt((notification: PromptMomentNotification)=> {});
+    //   };
+    this.googleSignOn();
+  }
+
+  // Implementation of google single sign on
+
+  private googleClientId : string = environment.googleClientId;
+  googleSignOn(){
+    {
       google.accounts.id.initialize({
-        client_id: '200698853522-5b3nkgrgal38n7eqjqrrt6biinbt46ca.apps.googleusercontent.com',
+        client_id: this.googleClientId,
         callback: this.handleCredentialResponse.bind(this),
         auto_select: false,
         cancel_on_tap_outside: true
@@ -89,18 +103,19 @@ export class LoginComponent implements OnInit {
 
   // Method to call handle google single sign on with backend 
   async handleCredentialResponse (response: CredentialResponse){
-    debugger
+    
     await this.userService.loginWithGoogle(response.credential).subscribe(
    
       (x:any) => {
-        debugger
-      localStorage.setItem("token", x.token);
+      // localStorage.setItem("token", x.token);
+      this.isInvalidCredentials = false;
+      this.authService.storeToken(x.token);
       this._ngZone.run(() => {
-         this.router.navigate(['/logout']);
+         this.router.navigate(['dashboard']);
       })},
       (error:any) => {
-        debugger
-        console.log(error);
+        alert(error.error)
+        this.isInvalidCredentials = true;
         }
         );
       }
