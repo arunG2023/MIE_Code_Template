@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'app/services/auth.service';
 import * as Chartist from 'chartist';
 
 @Component({
@@ -8,7 +9,20 @@ import * as Chartist from 'chartist';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor() { }
+  userPayload: any;
+  role: string;
+  userEmail : string;
+
+  
+
+  constructor(private auth: AuthService) { 
+    this.userPayload = auth.decodeToken();
+    console.log(this.userPayload)
+
+    this.role = this.userPayload.role;
+    this.userEmail = this.userPayload['unique_name']
+    
+  }
  
   ngOnInit() {
 
