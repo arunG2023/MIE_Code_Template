@@ -114,8 +114,13 @@ export class LoginComponent implements OnInit {
          this.router.navigate(['dashboard']);
       })},
       (error:any) => {
-        alert(error.error)
-        this.isInvalidCredentials = true;
+        if(error.error && typeof(error.error) == 'string'){
+          alert(error.error)
+          this.isInvalidCredentials = true;
+        }
+        else{
+          alert("Unexpected Error Happened")
+        }
         }
         );
       }
